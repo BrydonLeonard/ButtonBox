@@ -20,8 +20,37 @@ ButtonManager::ButtonManager(unsigned char buttonMap[], char buttonScanLength, c
     }
 }
 
+/**
+ * TODO: Need to implement momentary switch functionality on all
+ *  of the switches so that games that trigger on button up can
+ *  understand what's going on. It'll look something like:
+ * 
+ * ┌─────────┐
+ * │Unpressed│◄───────────────┬───────┐
+ * └─┬───────┘                │       │
+ *   │                 Debounce delay │
+ *  Pressed            passed         │
+ *   │                        │       │
+ *   │                        │       │
+ *   ▼                        │       │
+ * ┌───────┐                  │       │
+ * │Pressed│◄───Pressed────┐  │       │
+ * └──┬───┬┘               │  │       │
+ *    │   │                │  │       │
+ *    │   └──Released────┐ │  │       │
+ *    │                  │ │  │       │
+ *  Momentary delay      ▼ │  │       │
+ *  passed           ┌─────┴──┴─┐     │
+ *    │              │Pressed   │     │
+ *    ▼              │presenting│     │
+ * ┌──────────┐      └──────────┘     │
+ * │Unpressed │                       │
+ * │presenting├─────Released──────────┘
+ * └──────────┘
+ */
 void ButtonManager::updateButtons(bool scanResult[]) {
     for (int i = 0; i < buttonScanLength; i++) {
+        // Do some debouncing
         if (debounceDelay[i] < millis()) {
             if (scanResult[i] < buttonStates[i]) {
                 buttonDeltas[i] = -1;
@@ -34,7 +63,6 @@ void ButtonManager::updateButtons(bool scanResult[]) {
             } else {
                 buttonDeltas[i] = 0;
             }
-            // Set the state so we can use it for future scans
         } else {
             buttonDeltas[i] = 0;
         }

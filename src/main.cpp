@@ -31,7 +31,30 @@ WrappedEncoder *encoder2 = new WrappedEncoder(2, 3);
 // Manages button states
 ButtonManager *buttonManager = new ButtonManager(
   new unsigned char[29] {
-    22, 20, 23, 21, 14, 12, 15, 13, 6, 4, 8, 10, 19, 17, 1, 3, 30, 29, 28, 35, 34, 33, 32, 31, 36, 37, 27, 38, 39
+    // Push buttons
+    22, 20, 23, 21, 14, 12, 15, 13, 
+    // Switches
+    6, 4, 8, 10, 19, 17, 1, 3, 
+    // Rotary switch
+    30, 29, 28, 35, 34, 33, 32, 31, 
+    // Encoders
+    36, 37, 27, 38, 
+    // Encoder pushbutton (only one works currently 🤷)
+    39
+  },
+  new ButtonType[29] {
+    // Push buttons
+    Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, 
+    // Switches
+    SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, 
+    SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, 
+    // Rotary switch
+    SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, 
+    SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, 
+    // Encoders
+    Momentary, Momentary, Momentary, Momentary, 
+    // Encoder pushbutton
+    Momentary
   },
   40,
   29
@@ -148,5 +171,3 @@ long encoderVal = 0;
 void loop() {
   scan();
 }
-
-

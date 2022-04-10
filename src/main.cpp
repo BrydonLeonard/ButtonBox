@@ -46,8 +46,15 @@ ButtonManager *buttonManager = new ButtonManager(
     // Push buttons
     Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, 
     // Switches
+    // ============================
+    // Driving
+    // ============================
     SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, 
     SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, 
+    // ============================
+    // Flying
+    // ============================
+    //Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, Momentary, 
     // Rotary switch
     SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, 
     SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, SyntheticMomentary, 
@@ -93,6 +100,8 @@ bool* translateEncoderChangeToStateArray(long encoderPosition) {
   return new bool[2] { 1, 1 };
 }
 
+int timer = 0;
+
 void scan() {
   // Button matrix + rotary switch + 2 encoders
   char scanPositions = buttonRegisterMaxScanRow * 4 + rotaryRegisterMaxScanRow + 2 + 2;
@@ -109,6 +118,10 @@ void scan() {
     states[statePositionIndex++] = digitalRead(BUTTON_ROW_3);
     states[statePositionIndex++] = digitalRead(BUTTON_ROW_4);
     buttonRegister->bumpLatch();
+  }
+
+  if (timer > 5000) {
+    timer = 0;
   }
 
   // Scan rotary switch

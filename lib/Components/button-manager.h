@@ -1,5 +1,50 @@
 enum ButtonState { Active, Inactive, ActivePresenting, InactivePresenting };
 enum ButtonType { Momentary, SyntheticMomentary };
+enum ButtonReleaseBehaviour { None, SyntheticPress };
+
+struct ButtonConfig {
+    ButtonType buttonType;
+    unsigned char syntheticMomentaryDelay;
+    unsigned char pin;
+    unsigned char buttonIndex;
+    unsigned long debounceDelay;
+    unsigned long momentaryDelay;
+    ButtonReleaseBehaviour buttonReleaseBehaviour;
+};
+
+struct StateTransition {
+    ButtonState from;
+    ButtonState to;
+};
+
+typedef void((*StateTransitionCallback)());
+
+class Button {
+    protected:
+        ButtonState buttonState;
+        unsigned long debounceEndTime;
+        unsigned long momentaryEndTime;
+        char buttonDelta;
+        StateTransitionCallback activeInactive;
+        StateTransitionCallback inactiveActive;
+    public:
+        Button(ButtonConfig buttonConfig);
+        struct ButtonConfig buttonConfig;
+        unsigned char* registerJoystickButtons(); // Return the button indexes to associate to this button
+        char getStateChange(unsigned char buttonIndex); // Get the state delta for the requested button
+        void updateState(bool systemState[]); // Update the internal state of the button. Receives the full system state and will extract the reuired information.
+        void registerActiveInactiveCallback(StateTransitionCallback callback);
+        void registerInactiveActiveCallback(StateTransitionCallback callback);
+};
+
+class CompoundButton : public Button {
+    private:
+        Button internalButton;
+    public:
+        CompoundButton(ButtonConfig buttonConfig, ButtonConfig internalButtonConfig);
+        char getStateChange(unsigned char buttonIndex);
+        void updateState(bool systemState[]);
+};
 
 class ButtonManager {
     private:
